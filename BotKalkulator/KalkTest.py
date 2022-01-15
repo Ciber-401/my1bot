@@ -8,7 +8,7 @@ oldvalue = ''
 
 keyboard = telebot.types.InlineKeyboardMarkup(row_width=3)
 keyboard.row(telebot.types.InlineKeyboardButton(' ', callback_data='no'),
-             telebot.types.InlineKeyboardButton('С', callback_data='С'),
+             telebot.types.InlineKeyboardButton('С', callback_data='C'),
              telebot.types.InlineKeyboardButton('<=', callback_data='<='),
              telebot.types.InlineKeyboardButton('/', callback_data='/'))
 
@@ -55,17 +55,21 @@ def callback_func(query):
     elif data == 'C':
         value = ''
     elif data == '=':
-        value = str( eval(value))
+        try:
+            value = str( eval(value) )
+
+        except:
+            value = 'error'
     else:
-        value += data
+            value += data
 
     if value != oldvalue:
         if value == '':
             bot.edit_message_text(chat_id = query.message.chat.id, message_id = query.message.message_id, text='0', reply_markup = keyboard)
 
         else:
-             bot.edit_message_text(chat_id = query.message.chat.id, message_id = query.message.message_id, text = value , reply_markup = keyboard)
+             bot.edit_message_text(chat_id = query.message.chat.id, message_id = query.message.message_id, text = value, reply_markup = keyboard)
 
     oldvalue = value
-
+    if value == 'error': value = ''
 bot.polling(none_stop=False, interval=0)
